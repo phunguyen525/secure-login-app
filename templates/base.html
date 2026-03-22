@@ -13,9 +13,11 @@
 
         {% if session.get('user_id') %}
         <a href="{{ url_for('change_password') }}">Change Password</a>
+        <a href="{{ url_for('feedback') }}">Submit Feedback</a>
 
         {% if session.get('role') == 'admin' %}
         <a href="{{ url_for('create_user') }}">Create User</a>
+        <a href="{{ url_for('feedback_list') }}">View Feedback</a>
         {% endif %}
 
         <a href="{{ url_for('logout') }}">Logout</a>

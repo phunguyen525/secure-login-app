@@ -192,5 +192,59 @@ def create_user():
     return render_template("create_user.html", user=user)
 
 
+@app.route("/feedback", methods=["GET", "POST"])
+@login_required
+def feedback():
+    user = get_current_user()
+
+    if request.method == "POST":
+        subject = request.form.get("subject", "").strip()
+        message = request.form.get("message", "").strip()
+
+        if subject == "" or message == "":
+            flash("Subject and message are required.")
+            return render_template("feedback_form.html", user=user)
+
+        if len(subject) < 3 or len(subject) > 100:
+            flash("Subject must be between 3 and 100 characters.")
+            return render_template("feedback_form.html", user=user)
+
+        if len(message) < 5 or len(message) > 1000:
+            flash("Message must be between 5 and 1000 characters.")
+            return render_template("feedback_form.html", user=user)
+
+        conn = get_connection()
+        conn.execute(
+            "INSERT INTO feedback (user_id, subject, message) VALUES (?, ?, ?)",
+            (user["id"], subject, message)
+        )
+        conn.commit()
+        conn.close()
+
+        flash("Feedback submitted successfully.")
+        return redirect(url_for("feedback"))
+
+    return render_template("feedback_form.html", user=user)
+
+
+@app.route("/feedback-list")
+@admin_required
+def feedback_list():
+    user = get_current_user()
+
+    conn = get_connection()
+    feedback_items = conn.execute(
+        """
+        SELECT feedback.id, feedback.subject, feedback.message, feedback.created_at, users.username
+        FROM feedback
+        JOIN users ON feedback.user_id = users.id
+        ORDER BY feedback.created_at DESC
+        """
+    ).fetchall()
+    conn.close()
+
+    return render_template("feedback_list.html", user=user, feedback_items=feedback_items)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

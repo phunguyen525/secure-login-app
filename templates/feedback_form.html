@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Submit Feedback</h1>
+
+<form method="POST">
+    <div>
+        <label for="subject">Subject</label><br>
+        <input type="text" id="subject" name="subject" required>
+    </div>
+
+    <br>
+
+    <div>
+        <label for="message">Message</label><br>
+        <textarea id="message" name="message" rows="6" cols="50" required></textarea>
+    </div>
+
+    <br>
+
+    <button type="submit">Submit Feedback</button>
+</form>
+{% endblock %}
