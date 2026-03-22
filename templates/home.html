@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Secure Login App</h1>
+
+{% if user %}
+<p>You are logged in.</p>
+<p><strong>Username:</strong> {{ user["username"] }}</p>
+<p><strong>Role:</strong> {{ user["role"] }}</p>
+{% else %}
+<p>You are not logged in.</p>
+<p>Please <a href="{{ url_for('login') }}">log in</a>.</p>
+{% endif %}
+{% endblock %}
