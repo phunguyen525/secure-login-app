@@ -32,6 +32,21 @@ def login_required(view):
     return wrapped_view
 
 
+def admin_required(view):
+    @wraps(view)
+    def wrapped_view(*args, **kwargs):
+        if session.get("user_id") is None:
+            flash("Please log in first.")
+            return redirect(url_for("login"))
+
+        if session.get("role") != "admin":
+            flash("Access denied.")
+            return redirect(url_for("home"))
+
+        return view(*args, **kwargs)
+    return wrapped_view
+
+
 @app.route("/")
 def home():
     user = get_current_user()
@@ -123,6 +138,58 @@ def change_password():
         return redirect(url_for("login"))
 
     return render_template("change_password.html", user=user)
+
+
+@app.route("/create-user", methods=["GET", "POST"])
+@admin_required
+def create_user():
+    user = get_current_user()
+
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+        role = request.form.get("role", "").strip()
+
+        if username == "" or password == "" or role == "":
+            flash("All fields are required.")
+            return render_template("create_user.html", user=user)
+
+        if len(username) < 3 or len(username) > 50:
+            flash("Username must be between 3 and 50 characters.")
+            return render_template("create_user.html", user=user)
+
+        if len(password) < 8:
+            flash("Password must be at least 8 characters long.")
+            return render_template("create_user.html", user=user)
+
+        if role not in ["admin", "customer"]:
+            flash("Invalid role selected.")
+            return render_template("create_user.html", user=user)
+
+        conn = get_connection()
+        existing_user = conn.execute(
+            "SELECT id FROM users WHERE username = ?",
+            (username,)
+        ).fetchone()
+
+        if existing_user is not None:
+            conn.close()
+            flash("Username already exists.")
+            return render_template("create_user.html", user=user)
+
+        hashed_password = hash_password(password)
+
+        conn.execute(
+            "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
+            (username, hashed_password, role)
+        )
+        conn.commit()
+        conn.close()
+
+        flash("User created successfully.")
+        return redirect(url_for("create_user"))
+
+    return render_template("create_user.html", user=user)
 
 
 if __name__ == "__main__":
