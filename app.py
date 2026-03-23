@@ -1,9 +1,13 @@
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from db import get_connection, check_password, hash_password
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "change-this-later-for-final-submission"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-key")
 
 
 def get_current_user():
