@@ -123,7 +123,6 @@ schema.sql           Database schema
 templates/           Jinja2 templates (auto-escaped)
 static/style.css     Styles, kept out of the HTML so the CSP can block inline styles
 tests/               pytest security test suite
-.env.example         Configuration template
 ```
 
 ## Known limitations
