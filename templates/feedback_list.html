@@ -1,29 +1,33 @@
 {% extends "base.html" %}
+{% block title %}All Feedback - Secure Login App{% endblock %}
 
 {% block content %}
 <h1>All Feedback</h1>
+<p class="muted">Review all submitted feedback entries.</p>
 
 {% if feedback_items %}
-<table border="1" cellpadding="8">
-    <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Subject</th>
-        <th>Message</th>
-        <th>Created At</th>
-    </tr>
+<div class="table-wrapper">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Created At</th>
+        </tr>
 
-    {% for item in feedback_items %}
-    <tr>
-        <td>{{ item["id"] }}</td>
-        <td>{{ item["username"] }}</td>
-        <td>{{ item["subject"] }}</td>
-        <td>{{ item["message"] }}</td>
-        <td>{{ item["created_at"] }}</td>
-    </tr>
-    {% endfor %}
-</table>
+        {% for item in feedback_items %}
+        <tr>
+            <td>{{ item["id"] }}</td>
+            <td>{{ item["username"] }}</td>
+            <td>{{ item["subject"] }}</td>
+            <td>{{ item["message"] }}</td>
+            <td>{{ item["created_at"] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 {% else %}
-<p>No feedback has been submitted yet.</p>
+<p class="muted">No feedback has been submitted yet.</p>
 {% endif %}
 {% endblock %}

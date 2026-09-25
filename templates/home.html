@@ -1,14 +1,20 @@
 {% extends "base.html" %}
+{% block title %}Home - Secure Login App{% endblock %}
 
 {% block content %}
 <h1>Secure Login App</h1>
 
 {% if user %}
-<p>You are logged in.</p>
-<p><strong>Username:</strong> {{ user["username"] }}</p>
-<p><strong>Role:</strong> {{ user["role"] }}</p>
+<p>Welcome back. You are currently logged in.</p>
+
+<div class="home-grid">
+    <div class="info-box">
+        <p><strong>Username:</strong> {{ user["username"] }}</p>
+        <p><strong>Role:</strong> <span class="badge">{{ user["role"] }}</span></p>
+    </div>
+</div>
 {% else %}
 <p>You are not logged in.</p>
-<p>Please <a href="{{ url_for('login') }}">log in</a>.</p>
+<p>Please <a href="{{ url_for('login') }}">log in</a> or <a href="{{ url_for('signup') }}">create an account</a> to continue.</p>
 {% endif %}
 {% endblock %}

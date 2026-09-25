@@ -1,25 +1,25 @@
 {% extends "base.html" %}
+{% block title %}Create User - Secure Login App{% endblock %}
 
 {% block content %}
 <h1>Create User</h1>
+<p class="muted">Admins can create a new account here.</p>
 
 <form method="POST">
-    <div>
-        <label for="username">Username</label><br>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="form-group">
+        <label for="username">Username</label>
         <input type="text" id="username" name="username" required>
     </div>
 
-    <br>
-
-    <div>
-        <label for="password">Password</label><br>
+    <div class="form-group">
+        <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
     </div>
 
-    <br>
-
-    <div>
-        <label for="role">Role</label><br>
+    <div class="form-group">
+        <label for="role">Role</label>
         <select id="role" name="role" required>
             <option value="">Select role</option>
             <option value="customer">Customer</option>
@@ -27,8 +27,6 @@
         </select>
     </div>
 
-    <br>
-
-    <button type="submit">Create User</button>
+    <button type="submit" class="btn">Create User</button>
 </form>
 {% endblock %}

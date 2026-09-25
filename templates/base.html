@@ -4,40 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Login App</title>
+    <title>{% block title %}Secure Login App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-    <nav>
-        <a href="{{ url_for('home') }}">Home</a>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="{{ url_for('home') }}">Secure Login App</a>
 
-        {% if session.get('user_id') %}
-        <a href="{{ url_for('change_password') }}">Change Password</a>
-        <a href="{{ url_for('feedback') }}">Submit Feedback</a>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
 
-        {% if session.get('role') == 'admin' %}
-        <a href="{{ url_for('create_user') }}">Create User</a>
-        <a href="{{ url_for('feedback_list') }}">View Feedback</a>
-        {% endif %}
+                {% if session.get('user_id') %}
+                <a href="{{ url_for('change_password') }}">Change Password</a>
+                <a href="{{ url_for('feedback') }}">Submit Feedback</a>
 
-        <a href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-        <a href="{{ url_for('login') }}">Login</a>
-        {% endif %}
+                {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('create_user') }}">Create User</a>
+                <a href="{{ url_for('feedback_list') }}">View Feedback</a>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('logout') }}" class="nav-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="nav-button">Logout</button>
+                </form>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </div>
+        </div>
     </nav>
 
-    <hr>
+    <div class="container">
+        <div class="page-card">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+            <div class="alert {{ 'alert-success' if category == 'success' else 'alert-error' }}">{{ message }}</div>
+            {% endfor %}
+            {% endwith %}
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for message in messages %}
-    <p>{{ message }}</p>
-    {% endfor %}
-    <hr>
-    {% endif %}
-    {% endwith %}
+            {% if error_message %}
+            <div class="alert alert-error">{{ error_message }}</div>
+            {% endif %}
 
-    {% block content %}{% endblock %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 </body>
 
 </html>
